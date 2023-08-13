@@ -24,4 +24,4 @@ ShareEase is currently in development and will soon be launched. Follow my [Link
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](licence).
