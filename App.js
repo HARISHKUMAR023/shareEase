@@ -1,38 +1,62 @@
-import { StatusBar } from 'expo-status-bar';
-
-import { StyleSheet,Button, Text, View } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { Provider as PaperProvider } from 'react-native-paper';
 
-
-import GetItemScreen from './components/GetItemScreen';
+// Import your screen components
 import HomeScreen from './components/HomeScreen';
 import PostItemForm from './components/PostItemForm';
+import GetItemScreen from './components/GetItemScreen';
 
+const Tab = createMaterialBottomTabNavigator();
 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+// ...
 
-
-
-
-const Stack = createNativeStackNavigator();
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="PostItem" component={PostItemForm} />
-        <Stack.Screen name="GetItem" component={GetItemScreen} />
-      </Stack.Navigator>
+      <PaperProvider>
+        <Tab.Navigator
+          activeColor="#e91e63"
+          shifting={true}
+        >
+          <Tab.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              tabBarLabel: 'Home',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="home" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="PostItem"
+            component={PostItemForm}
+            options={{
+              tabBarLabel: 'Post Item',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="plus" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="GetItem"
+            component={GetItemScreen}
+            options={{
+              tabBarLabel: 'Get Item',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="bell" color={color} size={26} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </PaperProvider>
     </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-});
+
+export default App;
