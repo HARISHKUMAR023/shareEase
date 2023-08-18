@@ -35,35 +35,39 @@ const HomeScreen = () => {
     });
   };
   return (
+   // ... (import statements)
+
+
     <ScrollView style={styles.container}>
       {items.map((item, index) => (
         <View key={index}>
           <Card style={styles.card}>
-            {/* <Card.Cover source={{ uri: item.image }} /> */}
-            {/* <ImageBackground
-             source={food}
-              style={styles.cardImage}
-            > */}
             <Card.Content>
               <Title style={styles.title}>{item.itemname}</Title>
               <Paragraph style={styles.title}>{item.itemDescription}</Paragraph>
               <Paragraph style={styles.title}>Location: {item.location}</Paragraph>
               <Paragraph style={styles.title}>Donor: {item.Donatername}</Paragraph>
-              <Paragraph style={styles.title}>Posted Date and Time: {new Date(item.postedDateTime.seconds * 1000 + item.postedDateTime.nanoseconds / 1000000).toLocaleString()}</Paragraph>
-
+              <Paragraph style={styles.title}>
+                Posted Date and Time: {item.postedDateTime ? 
+                  new Date(item.postedDateTime.seconds * 1000 + item.postedDateTime.nanoseconds / 1000000).toLocaleString() : 
+                  'N/A'}
+              </Paragraph>
             </Card.Content>
             <Card.Actions>
               <Button style={styles.callButton} onPress={() => handleCall(item.phoneNumber)}>
-                <Text style={styles.buttonText}>Call</Text></Button>
+                <Text style={styles.buttonText}>Call</Text>
+              </Button>
               <Button style={styles.shareButton} onPress={() => handleShare(item)}>
                 <Text style={styles.buttonText}>Share</Text>
               </Button>
             </Card.Actions>
-            {/* </ImageBackground> */}
           </Card>
         </View>
       ))}
     </ScrollView>
+ 
+
+
   );
 };
 
