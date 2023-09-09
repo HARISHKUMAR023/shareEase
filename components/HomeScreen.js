@@ -6,6 +6,7 @@ import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import Communications from 'react-native-communications';
 import food from '../assets/Food.jpg';
+import tw from 'twrnc';
 
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
@@ -41,7 +42,7 @@ const HomeScreen = () => {
     <ScrollView style={styles.container}>
       {items.map((item, index) => (
         <View key={index}>
-          <Card style={styles.card}>
+          <Card style={tw`bg-orange-500 mt-4`}>
             <Card.Content>
               <Title style={styles.title}>{item.itemname}</Title>
               <Paragraph style={styles.title}>{item.itemDescription}</Paragraph>

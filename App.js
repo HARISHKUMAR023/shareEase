@@ -6,9 +6,11 @@ import AuthStack from './components/AuthStack';
 import HomeScreen from './components/HomeScreen';
 import PostItemForm from './components/PostItemForm';
 import GetItemScreen from './components/GetItemScreen';
+import NGOScreen from './components/Ngocontact';
 import LogoutScreen from './components/Logout'; // Import the LogoutScreen component
 import { auth } from './firebaseConfig'; // Import the firebase configuration
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // Import icons
+import tw from 'twrnc';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -52,6 +54,15 @@ const App = () => {
               options={{
                 tabBarIcon: ({ color }) => (
                   <MaterialCommunityIcons name="plus" color={color} size={26} />
+                ),
+              }}
+            />
+               <Tab.Screen
+              name="Ngocontact"
+              component={NGOScreen}
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <MaterialCommunityIcons name="account-multiple-check" color={color} size={26} />
                 ),
               }}
             />
