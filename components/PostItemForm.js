@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
+import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import Optionbtn from './Optionbtn';
-import Datedis from './Datetime'; // Import the Datedis component
+import Datedis from './Datetime';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const PostItemForm = () => {
   const [itemName, setItemName] = useState('');
@@ -12,17 +13,78 @@ const PostItemForm = () => {
   const [Donatername, setDonatername] = useState('');
   const [ulocation, setulocation] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedDateTime, setSelectedDateTime] = useState(null); // New state for selected date and time
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [posting, setPosting] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-  const handlePostItem = async () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  // Retrieve the itemLocation parameter from the route
+  const { itemLocation } = route.params || {};
+
+  useEffect(() => {
+    // If itemLocation is available, you can use it
+    if (itemLocation) {
+      // Do something with itemLocation.latitude and itemLocation.longitude
+      // Example: setulocation(`Latitude: ${itemLocation.latitude}, Longitude: ${itemLocation.longitude}`);
+    }
+  }, [itemLocation]);
+
+  const validateInput = () => {
+    if (!itemName) {
+      Alert.alert('Validation Error', 'Item Name is required.');
+      return false;
+    }
+  
+    if (!itemDescription) {
+      Alert.alert('Validation Error', 'Item Description is required.');
+      return false;
+    }
+  
+    if (!Donatername) {
+      Alert.alert('Validation Error', 'Donater Name is required.');
+      return false;
+    }
+  
+    if (!ulocation) {
+      Alert.alert('Validation Error', 'Location is required.');
+      return false;
+    }
+  
+    if (!phoneNumber) {
+      Alert.alert('Validation Error', 'Phone Number is required.');
+      return false;
+    }
+  
+    // Add phone number validation
+    const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number format
+    if (!phoneRegex.test(phoneNumber)) {
+      Alert.alert('Validation Error', 'Please enter a valid phone number.');
+      return false;
+    }
+  
     if (!selectedCategory) {
-      setSnackbarVisible(true);
+      Alert.alert('Validation Error', 'Category is required.');
+      return false;
+    }
+  
+    if (selectedCategory === 'cookedfood' && !selectedDateTime) {
+      Alert.alert('Validation Error', 'Date and Time is required for the "cookedfood" category.');
+      return false;
+    }
+  
+    return true;
+  };
+  
+
+  const handlePostItem = async () => {
+    if (posting) {
+      // Don't allow posting while another item is being posted
       return;
     }
-
+    
     const isValid = validateInput();
 
     if (isValid) {
@@ -49,8 +111,9 @@ const PostItemForm = () => {
         category: selectedCategory,
         location: ulocation,
         phoneNumber: phoneNumber,
-        selectedDateTime: selectedDateTime, 
+        selectedDateTime: selectedDateTime,
         postedDateTime: currentDateTime,
+        itemLocation: itemLocation, // Include the item location
       });
 
       // Reset state variables here
@@ -60,7 +123,7 @@ const PostItemForm = () => {
       setSelectedCategory('');
       setulocation('');
       setPhoneNumber('');
-      setSelectedDateTime(null); // Reset selected date and time
+      setSelectedDateTime(null);
       setPosting(false);
       setSnackbarVisible(true);
     } catch (error) {
@@ -69,58 +132,39 @@ const PostItemForm = () => {
     }
   };
 
-  const validateInput = () => {
-    if (
-      !itemName ||
-      !itemDescription ||
-      !Donatername ||
-      !ulocation ||
-      !phoneNumber
-
-    ) {
-      Alert.alert('Validation Error', 'All fields are required.');
-      return false;
-    }
-
-    // You can add more validation checks here
-
-    return true;
-  };
-
   return (
     <View style={styles.container}>
-      <TextInput 
+      <TextInput
         label="Item Name"
         value={itemName}
-        onChangeText={text => setItemName(text)}
-        style={styles.inp}
+        onChangeText={(text) => setItemName(text)}
+        // style={styles.inp}
       />
       <TextInput
         label="Item Description"
         value={itemDescription}
-        onChangeText={text => setItemDescription(text)}
+        onChangeText={(text) => setItemDescription(text)}
         style={styles.input}
       />
       <TextInput
         label="Donater name"
         value={Donatername}
-        onChangeText={text => setDonatername(text)}
+        onChangeText={(text) => setDonatername(text)}
         style={styles.input}
       />
       <TextInput
         label="Location"
         value={ulocation}
-        onChangeText={text => setulocation(text)}
+        onChangeText={(text) => setulocation(text)}
         style={styles.input}
       />
       <TextInput
         label="Phone Number"
         value={phoneNumber}
-        onChangeText={text => setPhoneNumber(text)}
+        onChangeText={(text) => setPhoneNumber(text)}
         style={styles.input}
       />
 
-      {/* Render Datedis component for "cookedfood" category */}
       {selectedCategory === 'cookedfood' && (
         <Datedis
           selectedDateTime={selectedDateTime}
@@ -128,17 +172,29 @@ const PostItemForm = () => {
         />
       )}
 
-      <Optionbtn setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
+      <Button
+        mode="contained"
+        style={styles.getLocationButton}
+        onPress={() => navigation.navigate('Map')}
+        disabled={posting}
+      >
+        Get Item Location
+      </Button>
+
+      <Optionbtn
+        setSelectedCategory={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
 
       <Button
         mode="contained"
         style={styles.post}
         onPress={handlePostItem}
-        loading={posting}
         disabled={posting}
       >
         Post Item
       </Button>
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
@@ -149,41 +205,20 @@ const PostItemForm = () => {
       >
         {selectedCategory ? 'Item posted successfully.' : 'Please select a category.'}
       </Snackbar>
-      {/* ... (Snackbar and other components) */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 900,
+    flex: 1,
     backgroundColor: 'white',
     padding: 16,
   },
-  inp:{ marginTop:30,
-    marginBottom: 10,
-    height: 50,
-    borderColor: 'gray',
-    paddingHorizontal: 8,
-    borderWidth: 0.5,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    fontSize: 16,
-  },
-  input: {
-   
-    marginBottom: 10,
-    height: 50,
-    borderColor: 'gray',
-    paddingHorizontal: 8,
-    borderWidth: 0.5,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    fontSize: 16,
-  },
   post: {
     backgroundColor: '#e80765',
-  },
+  }
+ 
 });
 
 export default PostItemForm;

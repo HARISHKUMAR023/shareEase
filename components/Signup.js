@@ -99,7 +99,7 @@ const Signupscreen = () => {
       <View style={tw`bg-slate-50 p-10 py-2 mt-8 rounded-lg`}>
         <Text style={tw`font-bold text-2xl text-black text-center`}  >Signup</Text>
         <Image
-          source={require('../assets/signup.webp')}
+          source={require('../assets/signup.jpg')}
           style={tw ` w-60 h-60 `}
         />
         {isLoading && (

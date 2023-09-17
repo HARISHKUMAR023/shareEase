@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button,Image, StyleSheet,Pressable,Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; // Import your Firebase auth instance
+ // Import your Firebase auth instance
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-import ExpoFastImage from 'expo-fast-image';
-import LottieView from 'lottie-react-native';
-
 import tw from 'twrnc';
-import loginimg from '../assets/login.json';
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +23,7 @@ const LoginScreen = () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        alert("You entered wrong userid and password")
+        alert(`Error: ${errorCode} ${errorMessage}`);
       });
     
   };
@@ -36,22 +32,13 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <View style={tw`bg-slate-50 p-10 py-7 rounded-lg`}>
         <Text style={tw`font-bold text-2xl text-black text-center`}  >Login</Text>
-        <LottieView
-         style={ tw ` w-60 h-60 ` } 
-  source={loginimg} // Replace with the imported JSON file
   
-/>
-      {/* <Image
-  source={require('../assets/Loginscreen.gif')} 
+      <Image
+  source={require('../assets/login.jpg')} 
   style={ tw ` w-60 h-60 ` } 
-/> */}
+/>
 
-{/* <ExpoFastImage
-  uri='../assets/Loginscreen.gif' 
-  cacheKey='unique key'
-  style={tw ` w-60 h-60 `} 
-  
-/> */}
+
       <TextInput 
         placeholder="Email"
         value={email}
@@ -72,10 +59,7 @@ const LoginScreen = () => {
     </Pressable>
       </View>
       
-      {/* <Button style={tw`rounded`}
-        title="Don't have an account? Sign Up"
-        onPress={() => navigation.navigate('Signup')}
-      /> */}
+      
       <Pressable style={tw`bg-lime-500 p-3 rounded `} onPress={() => navigation.navigate('Signup')}>
       <Text style={tw`font-semibold text-slate-50 text-center `}>Sign Up</Text>
     </Pressable>

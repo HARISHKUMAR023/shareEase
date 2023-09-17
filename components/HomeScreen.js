@@ -5,12 +5,17 @@ import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestor
 import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import Communications from 'react-native-communications';
-import food from '../assets/Food.jpg';
-import tw from 'twrnc';
 
+import tw from 'twrnc';
+import { useNavigation } from '@react-navigation/native';
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
+  const navigation = useNavigation();
 
+  const handleDirection = (item) => {
+    // Navigate to the 'MapScreen' and pass the pickup location coordinates as a parameter
+    navigation.navigate('Map', { itemLocation: item.itemLocation });
+  };
   useEffect(() => {
     console.log('Fetching data...');
     const unsubscribe = onSnapshot(collection(db, 'items'), (snapshot) => {
@@ -36,7 +41,7 @@ const HomeScreen = () => {
     });
   };
   return (
-   // ... (import statements)
+  
 
 
     <ScrollView style={styles.container}>
@@ -55,6 +60,9 @@ const HomeScreen = () => {
               </Paragraph>
             </Card.Content>
             <Card.Actions>
+            <Button style={styles.directionButton} onPress={() => handleDirection(item)}>
+    <Text style={styles.buttonText}>Direction</Text>
+  </Button>
               <Button style={styles.callButton} onPress={() => handleCall(item.phoneNumber)}>
                 <Text style={styles.buttonText}>Call</Text>
               </Button>
@@ -74,7 +82,7 @@ const HomeScreen = () => {
 
 
 
-// ... Styles
+
 
 
 export default HomeScreen;
@@ -103,8 +111,8 @@ const styles = StyleSheet.create({
       color: 'white', // Set the button text color
     },
     buttonText: {
-      color: 'white', // Set the text color
-      fontWeight: 'bold', // Set the text font weight
+      color: 'white', 
+      fontWeight: 'bold', 
       
     },
     title:{

@@ -1,4 +1,4 @@
-// NGOScreen.js
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';

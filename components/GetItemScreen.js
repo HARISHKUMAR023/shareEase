@@ -1,11 +1,11 @@
-// GetItemScreen.js (or wherever you are using the db object)
+
 import React, { useState, useEffect } from 'react';
 import { View, Text,StyleSheet,ScrollView,Share,ImageBackground  } from 'react-native';
 import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import Communications from 'react-native-communications';
-import food from '../assets/Food.jpg';
+
 import tw from 'twrnc';
 const GetItemScreen = () => {
   const [items, setItems] = useState([]);
@@ -17,8 +17,7 @@ const GetItemScreen = () => {
       setItems(fetchedItems);
     });
   
-    // The return function here will be called when the component unmounts,
-    // allowing you to clean up the listener.
+    
     return () => unsubscribe();
   }, []);
   
@@ -35,8 +34,7 @@ const GetItemScreen = () => {
     });
   };
   return (
-   // ... (import statements)
-
+   
 
     <ScrollView style={styles.container}>
       {items.map((item, index) => (
@@ -73,7 +71,7 @@ const GetItemScreen = () => {
 
 
 
-// ... Styles
+
 
 
 export default GetItemScreen;
@@ -91,19 +89,18 @@ const styles = StyleSheet.create({
     backgroundColor:'#4c4f4f',
     color:'#f0f2f2'},
     callButton: {
-      backgroundColor: '#e80765', // Change the button background color
+      backgroundColor: '#e80765', 
       fontWeight: 'bold', 
-      // Set the button font weight
-       // Set the button text color
+      
     },
     shareButton: {
-      backgroundColor: '#0523eb', // Change the button background color
-      fontWeight: 'bold', // Set the button font weight
-      color: 'white', // Set the button text color
+      backgroundColor: '#0523eb', 
+      fontWeight: 'bold',
+      color: 'white'
     },
     buttonText: {
-      color: 'white', // Set the text color
-      fontWeight: 'bold', // Set the text font weight
+      color: 'white', 
+      fontWeight: 'bold'
       
     },
     title:{

@@ -7,11 +7,14 @@ import HomeScreen from './components/HomeScreen';
 import PostItemForm from './components/PostItemForm';
 import GetItemScreen from './components/GetItemScreen';
 import NGOScreen from './components/Ngocontact';
-import LogoutScreen from './components/Logout'; // Import the LogoutScreen component
-import { auth } from './firebaseConfig'; // Import the firebase configuration
-import { MaterialCommunityIcons } from '@expo/vector-icons'; // Import icons
+import LogoutScreen from './components/Logout';
+import { auth } from './firebaseConfig';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import MapScreen from './components/Mapscreen';
 import tw from 'twrnc';
-
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { TapGestureHandler, RotationGestureHandler } from 'react-native-gesture-handler';
 const Tab = createMaterialBottomTabNavigator();
 
 const App = () => {
@@ -32,6 +35,8 @@ const App = () => {
   }, []);
 
   return (
+    // <TapGestureHandler>
+    //   <RotationGestureHandler>
     <NavigationContainer>
       <PaperProvider>
         {user ? (
@@ -49,15 +54,24 @@ const App = () => {
               }}
             />
             <Tab.Screen
-              name="PostItem"
-              component={PostItemForm}
+              name="Map"
+              component={MapScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="plus" color={color} size={26} />
+                  <MaterialCommunityIcons name="map" color={color} size={26} />
                 ),
               }}
             />
-               <Tab.Screen
+            <Tab.Screen
+              name="PostItem"
+              component={PostItemForm}
+              options={({ route }) => ({
+                tabBarIcon: ({ color }) => (
+                  <MaterialCommunityIcons name="plus" color={color} size={26} />
+                ),
+              })}
+            />
+            <Tab.Screen
               name="Ngocontact"
               component={NGOScreen}
               options={{
@@ -77,7 +91,7 @@ const App = () => {
             />
             <Tab.Screen
               name="SignOut"
-              component={LogoutScreen} // Use the LogoutScreen component here
+              component={LogoutScreen}
               options={{
                 tabBarIcon: ({ color }) => (
                   <MaterialCommunityIcons name="logout" color={color} size={26} />
@@ -90,6 +104,9 @@ const App = () => {
         )}
       </PaperProvider>
     </NavigationContainer>
+    // </RotationGestureHandler>
+    // </TapGestureHandler>
+     
   );
 };
 

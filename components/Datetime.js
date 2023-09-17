@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text,StyleSheet,ScrollView,Share,ImageBackground,Button,SafeAreaView  } from 'react-native';
+import { View, Text,Button } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker'; 
 
 const Datedis = ({ selectedDateTime, setSelectedDateTime }) => {
