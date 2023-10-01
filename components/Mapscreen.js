@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
-const MapScreen = () => {
+export default function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const navigation = useNavigation();
 
@@ -40,7 +40,7 @@ const MapScreen = () => {
       </Button>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -54,5 +54,3 @@ const styles = StyleSheet.create({
     margin: 16,
   },
 });
-
-export default MapScreen;

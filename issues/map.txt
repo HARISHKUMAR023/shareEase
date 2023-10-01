@@ -1,0 +1,10 @@
+ {/* map screen hidden for now  app.js*/}
+            {/* <Tab.Screen
+              name="Map"
+              component={MapScreen}
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <MaterialCommunityIcons name="map" color={color} size={26} />
+                ),
+              }}
+            /> */}

@@ -13,8 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MapScreen from './components/Mapscreen';
 import tw from 'twrnc';
 import 'react-native-gesture-handler';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { TapGestureHandler, RotationGestureHandler } from 'react-native-gesture-handler';
+import ProfileScreen from './components/Profilescreen';
 const Tab = createMaterialBottomTabNavigator();
 
 const App = () => {
@@ -35,8 +34,7 @@ const App = () => {
   }, []);
 
   return (
-    // <TapGestureHandler>
-    //   <RotationGestureHandler>
+ 
     <NavigationContainer>
       <PaperProvider>
         {user ? (
@@ -53,7 +51,16 @@ const App = () => {
                 ),
               }}
             />
-            <Tab.Screen
+           {/* <Tab.Screen
+              name="Profile"
+              component={ProfileScreen} // Use the ProfileScreen component
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <MaterialCommunityIcons name="account" color={color} size={26} />
+                ),
+              }}
+            /> */}
+            {/* <Tab.Screen
               name="Map"
               component={MapScreen}
               options={{
@@ -61,7 +68,7 @@ const App = () => {
                   <MaterialCommunityIcons name="map" color={color} size={26} />
                 ),
               }}
-            />
+            /> */}
             <Tab.Screen
               name="PostItem"
               component={PostItemForm}
@@ -104,8 +111,7 @@ const App = () => {
         )}
       </PaperProvider>
     </NavigationContainer>
-    // </RotationGestureHandler>
-    // </TapGestureHandler>
+   
      
   );
 };

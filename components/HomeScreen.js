@@ -5,16 +5,18 @@ import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestor
 import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import Communications from 'react-native-communications';
-
+import { StatusBar } from 'expo-status-bar';
+import { Image } from 'expo-image';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const navigation = useNavigation();
-
+// item to next drection screen
   const handleDirection = (item) => {
     // Navigate to the 'MapScreen' and pass the pickup location coordinates as a parameter
-    navigation.navigate('Map', { itemLocation: item.itemLocation });
+    // navigation.navigate('Map', { itemLocation: item.itemLocation });
+    alert("This feature is not available yet. Please check back later.");
   };
   useEffect(() => {
     console.log('Fetching data...');
@@ -41,15 +43,25 @@ const HomeScreen = () => {
     });
   };
   return (
-  
+  <View >
+    <View style={tw`bg-pink-600 p-2 my-6`}>
+    <StatusBar
+      barStyle="light-content"
+      backgroundColor="#007ACC"
+    />
+  <Text style={tw`text-white text-lg pl-2 font-bold`}>ShareEasy</Text>
+  </View>
 
-
-    <ScrollView style={styles.container}>
+    <ScrollView style={tw`mb-30 `}>
       {items.map((item, index) => (
         <View key={index}>
-          <Card style={tw`bg-orange-500 mt-4`}>
+          <Card style={tw`bg-orange-500 mt-4 m-3`}>
             <Card.Content>
+            <Image source={{ uri: item.fileRef }} style={{ width: 330, height: 200 }} />
+
               <Title style={styles.title}>{item.itemname}</Title>
+             
+             
               <Paragraph style={styles.title}>{item.itemDescription}</Paragraph>
               <Paragraph style={styles.title}>Location: {item.location}</Paragraph>
               <Paragraph style={styles.title}>Donor: {item.Donatername}</Paragraph>
@@ -74,7 +86,8 @@ const HomeScreen = () => {
         </View>
       ))}
     </ScrollView>
- 
+    </View>
+   
 
 
   );

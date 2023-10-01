@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button,Image, StyleSheet,Pressable,Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
- // Import your Firebase auth instance
+ 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import tw from 'twrnc';
 
@@ -34,7 +34,7 @@ const LoginScreen = () => {
         <Text style={tw`font-bold text-2xl text-black text-center`}  >Login</Text>
   
       <Image
-  source={require('../assets/login.jpg')} 
+  source={require('../assets/login.gif')} 
   style={ tw ` w-60 h-60 ` } 
 />
 

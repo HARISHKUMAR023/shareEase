@@ -7,15 +7,15 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import * as Location from 'expo-location';
 import * as Geocoding from 'expo-location'; // Import Geocoding from Expo's package
 import tw from 'twrnc';
-
+import {Picker} from '@react-native-picker/picker';
 const Signupscreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(''); // Changed to phoneNumber
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [pincode, setPincode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [userType, setUserType] = useState('donor');
   const navigation = useNavigation();
 
   const isButtonDisabled = !(name && phoneNumber && email && password && pincode);
@@ -48,6 +48,7 @@ const Signupscreen = () => {
         email: email,
         phoneNumber: phoneNumber, // Changed to phoneNumber
         pincode: pincode,
+        userType: userType,
       });
 
       console.log('User signed up successfully');
@@ -99,7 +100,7 @@ const Signupscreen = () => {
       <View style={tw`bg-slate-50 p-10 py-2 mt-8 rounded-lg`}>
         <Text style={tw`font-bold text-2xl text-black text-center`}  >Signup</Text>
         <Image
-          source={require('../assets/signup.jpg')}
+          source={require('../assets/signup.gif')}
           style={tw ` w-60 h-60 `}
         />
         {isLoading && (
@@ -133,6 +134,20 @@ const Signupscreen = () => {
           onChangeText={setPassword}
           style={tw`p-2 mt-2 rounded text-stone-950 border-2 border-lime-600`}
         />
+        <View   style={tw` mt-2 rounded text-stone-950 border-2 border-lime-600`}>
+        <Picker
+          selectedValue={userType}
+          onValueChange={(itemValue) => setUserType(itemValue)}
+          
+        >
+          <Picker.Item label="Donor" value="donor" style={tw`text-stone-950`} />
+          <Picker.Item label="Volunteer" value="volunteer" style={tw`text-stone-950`} />
+          <Picker.Item label="NGO" value="ngo" style={tw`text-stone-950`} />
+        </Picker>
+        </View>
+
+
+
         <TextInput
           placeholder="Pincode"
           value={pincode}
