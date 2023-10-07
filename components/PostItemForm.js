@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView,ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView,ActivityIndicator,Pressable } from 'react-native';
 import { TextInput, Button, Text, Snackbar, ProgressBar } from 'react-native-paper';
 import { db, storage } from '../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
@@ -131,6 +131,13 @@ const PostItemForm = () => {
     const isValid = validateInput();
   
     if (isValid) {
+      if (!temporaryImage) {
+        Alert.alert('Error', 'Please select an image before posting.');
+        setIsLoading(false);
+        return;
+      }
+  
+      setFileRef(''); // Reset fileRef to empty string before posting a new item
       Alert.alert(
         'Confirm Posting',
         'Are you sure the entered details are correct?',
@@ -143,16 +150,17 @@ const PostItemForm = () => {
                 setPosting(true);
                 const currentDateTime = new Date();
   
-                if (temporaryImage) {
-                  // If a temporary image is selected, upload it before posting
-                  const uniqueIdentifier = uuidv4();
-                  const imageBlob = await uriToBlob(temporaryImage);
-                  const storageRef = ref(storage, `items/${uniqueIdentifier}`);
-                  await uploadBytes(storageRef, imageBlob);
+                // Upload the selected image before posting
+                const uniqueIdentifier = uuidv4();
+                const imageBlob = await uriToBlob(temporaryImage);
+                const storageRef = ref(storage, `items/${uniqueIdentifier}`);
+                await uploadBytes(storageRef, imageBlob, {
+                  onUploadProgress: (progress) => {
+                    setUploadProgress(progress.bytesTransferred / progress.totalBytes);
+                  },
+                });
   
-                  setFileRef(await getDownloadURL(storageRef));
-                }
-  
+                const downloadURL = await getDownloadURL(storageRef);
                 await addDoc(collection(db, 'items'), {
                   itemname: itemName,
                   itemDescription: itemDescription,
@@ -162,7 +170,7 @@ const PostItemForm = () => {
                   phoneNumber: phoneNumber,
                   selectedDateTime: selectedDateTime,
                   postedDateTime: currentDateTime,
-                  fileRef: fileRef || '',
+                  fileRef: downloadURL || '',
                 });
   
                 setItemName('');
@@ -190,20 +198,20 @@ const PostItemForm = () => {
     }
   };
   
-  
 
   return (
-    <View style={tw`bg-slate-100 `}>
-      <View style={tw`bg-pink-600 p-2 my-6`}>
-        <StatusBar
+    <View style={tw`bg-emerald-100`}>
+      <View style={tw`bg-emerald-800 p-2 my-6`}>
+        <StatusBar 
           barStyle="light-content"
-          backgroundColor="#007ACC"
+          // backgroundColor="#2dd4bf"
         />
         <Text style={tw`text-white text-lg pl-2 font-bold`}>ShareEasy</Text>
       </View>
-      <ScrollView style={tw`mb-25`}>
-        <View style={tw`bg-slate-100 p-6 `}>
+      <ScrollView style={tw`mb-25 p-3 bg-emerald-100`}>
+        <View style={tw`bg-emerald-100 p-10 py-7 rounded-lg p-6 `}>
           <TextInput
+              style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600` }
             label="Item Name"
             value={itemName}
             onChangeText={(text) => setItemName(text)}
@@ -213,38 +221,43 @@ const PostItemForm = () => {
             label="Item Description"
             value={itemDescription}
             onChangeText={(text) => setItemDescription(text)}
-            style={styles.input}
+            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-emerald-100` }
           />
           <TextInput
             label="Donater name"
             value={Donatername}
             onChangeText={(text) => setDonatername(text)}
-            style={styles.input}
+            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
           />
           <TextInput
             label="Location"
             value={ulocation}
             onChangeText={(text) => setulocation(text)}
-            style={styles.input}
+            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
           />
           <TextInput
             label="Phone Number"
             value={phoneNumber}
             onChangeText={(text) => setPhoneNumber(text)}
-            style={styles.input}
+            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
           />
 
           {selectedCategory === 'cookedfood' && (
-            <Datedis
+            <View style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}>
+               <Datedis 
               selectedDateTime={selectedDateTime}
               setSelectedDateTime={setSelectedDateTime}
             />
+            </View>
+           
           )}
-
-          <Optionbtn
+<View style={tw`my-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}>
+<Optionbtn 
             setSelectedCategory={setSelectedCategory}
             selectedCategory={selectedCategory}
           />
+</View>
+          
 
           {temporaryImage && (
             <View>
@@ -260,32 +273,29 @@ const PostItemForm = () => {
       </View>
     )}
 
-          <Button
-            mode="contained"
-            style={styles.pickImage}
-            onPress={pickImage}
-          >
-            Pick Image
-          </Button>
-          <Button
-            mode="contained"
-            style={styles.post}
-            onPress={handlePostItem}
-            disabled={posting}
-          >
-            Post Item
-          </Button>
+<Pressable style={tw`bg-teal-400 p-3 rounded mb-2 `} onPress={pickImage}>
+      <Text mode="contained" style={tw`font-semibold text-slate-50 text-center  `}> Pick Image</Text>
+    </Pressable>
+    <Pressable style={tw`bg-teal-300 p-3 rounded `} onPress={handlePostItem}>
+      <Text mode="contained" disabled={posting} style={tw`font-semibold text-slate-50 text-center `}> Post Item</Text>
+    </Pressable>
         
-          {/* <Snackbar
-  visible={snackbarVisible}
-  onDismiss={() => setSnackbarVisible(false)}
-  action={{
-    label: 'OK',
-    onPress: () => {},
-  }}
->
-  {selectedCategory !== '' ? 'Item posted successfully.' : 'Please select a category.'}
-</Snackbar> */}
+        
+          <View style={styles.snackbarContainer}>
+            <Snackbar
+              visible={snackbarVisible}
+              onDismiss={() => setSnackbarVisible(false)}
+              duration={3000}
+              style={{ elevation: 0, backgroundColor: 'white' }}
+            >
+              <View style={[styles.snackbarContent, { justifyContent: 'center', alignItems: 'center' }]}>
+              <Image
+               source={require('../assets/success.gif')} 
+                style={{ width: 270, height: 280 }}
+              />
+              </View>
+            </Snackbar>
+          </View>
 
         </View>
       </ScrollView>
@@ -307,6 +317,18 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
+  },
+  snackbarContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 0,
+    
+    backgroundColor: 'white'
+  },
+  snackbarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

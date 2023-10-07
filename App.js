@@ -14,11 +14,12 @@ import MapScreen from './components/Mapscreen';
 import tw from 'twrnc';
 import 'react-native-gesture-handler';
 import ProfileScreen from './components/Profilescreen';
+import { View } from 'react-native-web';
 const Tab = createMaterialBottomTabNavigator();
 
 const App = () => {
   const [user, setUser] = useState(null);
-
+  const iconColor = 'black';
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
@@ -34,47 +35,31 @@ const App = () => {
   }, []);
 
   return (
- 
+    
     <NavigationContainer>
       <PaperProvider>
+     
         {user ? (
           <Tab.Navigator
-            activeColor="#e91e63"
+            activeColor="black"
             shifting={true}
+            barStyle={tw`bg-emerald-800`}
           >
             <Tab.Screen
               name="Home"
               component={HomeScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="home" color={color} size={26} />
+                  <MaterialCommunityIcons name="home" color={iconColor} size={26} />
                 ),
               }}
             />
-           {/* <Tab.Screen
-              name="Profile"
-              component={ProfileScreen} // Use the ProfileScreen component
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="account" color={color} size={26} />
-                ),
-              }}
-            /> */}
-            {/* <Tab.Screen
-              name="Map"
-              component={MapScreen}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="map" color={color} size={26} />
-                ),
-              }}
-            /> */}
             <Tab.Screen
               name="PostItem"
               component={PostItemForm}
               options={({ route }) => ({
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="plus" color={color} size={26} />
+                  <MaterialCommunityIcons name="plus" color={iconColor} size={26} />
                 ),
               })}
             />
@@ -83,7 +68,7 @@ const App = () => {
               component={NGOScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="account-multiple-check" color={color} size={26} />
+                  <MaterialCommunityIcons name="account-multiple-check" color={iconColor} size={26} />
                 ),
               }}
             />
@@ -92,7 +77,7 @@ const App = () => {
               component={GetItemScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="bell" color={color} size={26} />
+                  <MaterialCommunityIcons name="bell" color={iconColor} size={26} />
                 ),
               }}
             />
@@ -101,7 +86,7 @@ const App = () => {
               component={LogoutScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="logout" color={color} size={26} />
+                  <MaterialCommunityIcons name="logout" color={iconColor} size={26} />
                 ),
               }}
             />
@@ -111,8 +96,6 @@ const App = () => {
         )}
       </PaperProvider>
     </NavigationContainer>
-   
-     
   );
 };
 
