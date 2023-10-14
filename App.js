@@ -8,6 +8,7 @@ import PostItemForm from './components/PostItemForm';
 import GetItemScreen from './components/GetItemScreen';
 import NGOScreen from './components/Ngocontact';
 import LogoutScreen from './components/Logout';
+import Main from './components/Main';
 import { auth } from './firebaseConfig';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MapScreen from './components/Mapscreen';
@@ -19,7 +20,8 @@ const Tab = createMaterialBottomTabNavigator();
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const iconColor = 'black';
+  // const iconColor = 'black';
+  
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
@@ -43,14 +45,15 @@ const App = () => {
           <Tab.Navigator
             activeColor="black"
             shifting={true}
-            barStyle={tw`bg-emerald-800`}
+            barStyle={tw`bg-white border-t border-gray-200`}
+            tabBarActiveTintColor="red"
           >
             <Tab.Screen
               name="Home"
               component={HomeScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="home" color={iconColor} size={26} />
+                  <MaterialCommunityIcons name="home" color={color} size={26} />
                 ),
               }}
             />
@@ -59,7 +62,7 @@ const App = () => {
               component={PostItemForm}
               options={({ route }) => ({
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="plus" color={iconColor} size={26} />
+                  <MaterialCommunityIcons name="plus" color={color} size={26} />
                 ),
               })}
             />
@@ -68,7 +71,7 @@ const App = () => {
               component={NGOScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="account-multiple-check" color={iconColor} size={26} />
+                  <MaterialCommunityIcons name="account-multiple-check" color={color} size={26} />
                 ),
               }}
             />
@@ -77,7 +80,7 @@ const App = () => {
               component={GetItemScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="bell" color={iconColor} size={26} />
+                  <MaterialCommunityIcons name="bell" color={color} size={26} />
                 ),
               }}
             />
@@ -86,7 +89,7 @@ const App = () => {
               component={LogoutScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="logout" color={iconColor} size={26} />
+                  <MaterialCommunityIcons name="logout" color={color} size={26} />
                 ),
               }}
             />

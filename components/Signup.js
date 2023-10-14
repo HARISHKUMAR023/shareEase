@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Image, Pressable, Text, ScrollView , ActivityIndicator} from 'react-native'; // Import ScrollView
+import { View, TextInput, Button, StyleSheet, Alert, Image, Pressable, Text, ScrollView , ActivityIndicator, Modal} from 'react-native'; // Import ScrollView
 import { db } from '../firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 import { collection, addDoc } from 'firebase/firestore';
@@ -8,6 +8,7 @@ import * as Location from 'expo-location';
 import * as Geocoding from 'expo-location'; // Import Geocoding from Expo's package
 import tw from 'twrnc';
 import {Picker} from '@react-native-picker/picker';
+
 const Signupscreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,6 +17,7 @@ const Signupscreen = () => {
   const [pincode, setPincode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userType, setUserType] = useState('donor');
+  const [modalVisible, setModalVisible] = useState(false); // Add modalVisible state
   const navigation = useNavigation();
 
   const isButtonDisabled = !(name && phoneNumber && email && password && pincode);
@@ -32,6 +34,7 @@ const Signupscreen = () => {
     }
     
     setIsLoading(true); // Show loading indicator when signup starts
+    setModalVisible(true); // Show modal when signup starts
 
     const auth = getAuth();
     try {
@@ -62,6 +65,7 @@ const Signupscreen = () => {
       }
     } finally {
       setIsLoading(false); // Hide loading indicator after signup completes (success or error)
+      setModalVisible(false); // Hide modal after signup completes (success or error)
     }
   };
 
@@ -95,36 +99,42 @@ const Signupscreen = () => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={tw`bg-white `} >
  
-      <View style={tw`bg-slate-50 p-10 py-2 mt-8 rounded-lg`}>
-        <Text style={tw`font-bold text-2xl text-black text-center`}  >Signup</Text>
-        <Image
-          source={require('../assets/signup.gif')}
-          style={tw ` w-60 h-60 `}
-        />
-        {isLoading && (
-      <View style={tw`z-40 flex justify-center items-center`}>
-        <ActivityIndicator size="large" color="#56e41d" />
-      </View>
-    )}
+      <View style={tw` p-10 py-7 rounded-lg`}>
+      <Text style={tw`font-bold mt-1 text-3xl text-black text-center`}>
+          Share
+          <Text style={tw`font-bold text-3xl text-pink-500`}>{'Easy'}</Text>
+        </Text>
+        <Text style={tw`font-bold mt-6 text-2xl text-black text-center`}  >Signup</Text>
+      
+        <Modal // Add Modal component
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+        >
+          <View style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}>
+            <ActivityIndicator size="large" color="#56e41d" />
+          </View>
+        </Modal>
+
         <TextInput
           placeholder="Name"
           value={name}
           onChangeText={setName}
-          style={tw`p-2 rounded text-stone-950 border-2 border-lime-600`}
+          style={tw`p-4 mt-4 rounded text-black border-2 border-pink-500`}
         />
         <TextInput
           placeholder="Phone Number" // Updated placeholder
           value={phoneNumber} // Updated to phoneNumber
           onChangeText={setPhoneNumber} // Updated to setPhoneNumber
-          style={tw`p-2 mt-2 rounded text-stone-950 border-2 border-lime-600`}
+          style={tw`p-4 mt-4 rounded text-black border-2 border-pink-500`}
         />
         <TextInput
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
-          style={tw`p-2 mt-2 rounded text-stone-950 border-2 border-lime-600`}
+          style={tw`p-4 mt-4 rounded text-black border-2 border-pink-500`}
         />
             
         <TextInput
@@ -132,9 +142,9 @@ const Signupscreen = () => {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
-          style={tw`p-2 mt-2 rounded text-stone-950 border-2 border-lime-600`}
+          style={tw`p-4 mt-4 rounded text-black border-2 border-pink-500`}
         />
-        <View   style={tw` mt-2 rounded text-stone-950 border-2 border-lime-600`}>
+        <View   style={tw` mt-2 rounded text-stone-950 border-2 border-pink-500`}>
         <Picker
           selectedValue={userType}
           onValueChange={(itemValue) => setUserType(itemValue)}
@@ -152,34 +162,37 @@ const Signupscreen = () => {
           placeholder="Pincode"
           value={pincode}
           onChangeText={setPincode}
-          style={tw`p-2 mt-2 rounded text-stone-950 border-2 border-lime-600`}
+          style={tw`p-4 mt-4 rounded text-black border-2 border-pink-500`}
         />
         <View style={tw`mb-5 mt-5 `}>
           <Pressable
-            style={[tw`bg-lime-500 p-3 rounded`, isButtonDisabled && tw`opacity-50`]}
+            style={[tw`bg-pink-500 p-3 rounded`, isButtonDisabled && tw`opacity-50`]}
             onPress={handleSignup}
-            
             disabled={isButtonDisabled}
           >
             <Text style={tw`font-semibold text-slate-50 text-center `}>Sign up</Text>
           </Pressable>
+          <View style={tw`flex-row justify-center items-center mt-4`}>
+          <Text style={tw`font-normal text-lg text-black`}>Or sign up with:</Text>
+          <Pressable onPress={() => alert('This feature will be added soon')}>
+            <Image source={require('../assets/icons/google.png')} style={tw`w-8 h-8 ml-2`} />
+          </Pressable>
+          <Pressable onPress={() => alert('This feature will be added soon')}>
+            <Image source={require('../assets/icons/facebook.png')} style={tw`w-8 h-8 ml-2`} />
+          </Pressable>
         </View>
-        <Pressable style={tw`bg-lime-500 p-3 rounded mb-4 `} onPress={() => navigation.navigate('Login')}>
-          <Text style={tw`font-semibold text-slate-50 text-center `}>Back to Login</Text>
-        </Pressable>
+        </View>
+        <Text style={tw`font-normal mt-1 text-lg text-black text-center`}>
+          You have an account already ?{' '}
+          <Text onPress={() => navigation.navigate('Login')} style={tw`font-semibold text-lg text-pink-500`}>
+            {'Sign in'}
+          </Text>
+        </Text>
       </View>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1, // Allow content to grow inside the ScrollView
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: "#e80765",
-  },
-});
+const styles = StyleSheet.create({});
 
 export default Signupscreen;

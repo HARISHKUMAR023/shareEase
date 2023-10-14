@@ -51,7 +51,7 @@ const PostItemForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const storageRef = getStorage();
-
+  
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -162,6 +162,7 @@ const PostItemForm = () => {
   
                 const downloadURL = await getDownloadURL(storageRef);
                 await addDoc(collection(db, 'items'), {
+                  id: uniqueIdentifier,
                   itemname: itemName,
                   itemDescription: itemDescription,
                   Donatername: Donatername,
@@ -171,6 +172,7 @@ const PostItemForm = () => {
                   selectedDateTime: selectedDateTime,
                   postedDateTime: currentDateTime,
                   fileRef: downloadURL || '',
+                  status: 'available',
                 });
   
                 setItemName('');

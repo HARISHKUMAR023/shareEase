@@ -47,19 +47,19 @@ const HomeScreen = () => {
 
   return (
     <View>
-      <View style={tw`bg-pink-600 p-2 my-6`}>
+      {/* <View style={tw`bg-pink-600 p-2 my-6`}>
         <StatusBar
           barStyle="light-content"
           backgroundColor="#007ACC"
         />
         <Text style={tw`text-white text-lg pl-2 font-bold`}>ShareEasy</Text>
-      </View>
+      </View> */}
 
       <Searchbar
         placeholder="Search by location"
         onChangeText={(query) => setSearchQuery(query)}
         value={searchQuery}
-        style={tw`mx-3 mt-3`}
+        style={tw`mx-3 mt-10`}
       />
 
       <ScrollView style={tw`mb-30`}>
@@ -67,6 +67,7 @@ const HomeScreen = () => {
           <View key={index}>
             <Card style={tw`bg-slate-100 mt-4 m-3`}>
               <Card.Content>
+              <Text style={tw`font-semibold text-lg tracking-tight text-black capitalize mb-2`}>{item.status}</Text>
                 <Image source={{ uri: item.fileRef }} style={tw`rounded w-80 h-44`} />
 
                 <Title style={tw`font-bold text-lg tracking-tight text-black capitalize`}>{item.itemname}</Title>
