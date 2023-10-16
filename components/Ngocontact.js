@@ -34,7 +34,7 @@ const NGOScreen = () => {
   </View>
     <ScrollView style={styles.container}>
       {ngoList.map((ngo, index) => (
-        <View key={index} style={tw` mt-6 text-white flex flex-row p-5  rounded-lg bg-orange-500 `}>
+        <View key={index} style={tw` mt-6 text-white flex flex-row p-5  rounded-lg bg-pink-500 `}>
           <View style={tw`w-48`}>
           <Text style={tw`text-white font-semibold text-base`}>{ngo.name}</Text>
           <Text style={tw`text-white font-normal text-base `}>{ngo.description}</Text>

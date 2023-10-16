@@ -1,0 +1,70 @@
+  const handlePickup = async (item) => {
+    setModalVisible(true);
+    setCode('');
+    const itemRef = doc(db, 'items', item.id);
+    const itemDoc = await getDocs(itemRef);
+    const itemData = itemDoc.data();
+    if (itemData.status === 'available') {
+      Alert.alert(
+        'Pickup Confirmation',
+        'Are you sure you want to pickup this item?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => setModalVisible(false),
+            style: 'cancel'
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              if (code === '0203') {
+                updateDoc(itemRef, { status: 'picked' });
+                Alert.alert('Success', 'Item has been picked up!');
+              } else {
+                Alert.alert('Error', 'Invalid code!');
+              }
+              setModalVisible(false);
+            }
+          }
+        ]
+      );
+    } else {
+      Alert.alert('Error', 'This item is no longer available!');
+    }
+  };
+
+
+
+
+
+
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={tw`flex-1 justify-center items-center bg-gray-900 bg-opacity-50`}>
+          <View style={tw`bg-white p-6 rounded-lg`}>
+            <Text style={tw`text-lg font-semibold mb-2`}>Enter Pickup Code:</Text>
+            <TextInput
+              style={tw`border border-gray-400 p-2 mb-4`}
+              onChangeText={setCode}
+              value={code}
+              keyboardType="numeric"
+              maxLength={4}
+            />
+            <Pressable style={tw`bg-pink-600 p-3 rounded`} onPress={() => {
+              if (code === '0203') {
+                setModalVisible(false);
+              } else {
+                Alert.alert('Error', 'Invalid code!');
+              }
+            }}>
+              <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>Submit</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>

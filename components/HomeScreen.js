@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Share, ImageBackground, Pressable } from 'react-native';
-import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
+import { View,Modal,TextInput, Text, StyleSheet, ScrollView, Share, ImageBackground, Pressable,Linking } from 'react-native';
+import { collection,serverTimestamp,doc, getDocs, query, where, onSnapshot,updateDoc } from 'firebase/firestore';
 import { Card, Title, Paragraph, Button } from 'react-native-paper';
-import { db } from '../firebaseConfig';
+
 import Communications from 'react-native-communications';
 import { StatusBar } from 'expo-status-bar';
 import { Image } from 'expo-image';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
+import { db, storage } from '../firebaseConfig';
 
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [code, setCode] = useState('');
   const handleDirection = (item) => {
     alert("This feature is not available yet. Please check back later.");
   };
@@ -31,9 +33,42 @@ const HomeScreen = () => {
 
   const handleCall = phoneNumber => {
     if (phoneNumber) {
-      Communications.phonecall(phoneNumber, true);
+      Linking.openURL(`tel:${phoneNumber}`);
     }
   };
+
+  const handlePickup = (item) => {
+    setModalVisible(true);
+  };
+
+  const handleConfirmation = async () => {
+    if (code === '0203') {
+      try {
+        const updatedItem = items.find((item) => item.id === itemId); // Change item.id to itemId
+        if (updatedItem) {
+          await updateDoc(doc(db, 'items', updatedItem.id), {
+            status: 'Pickup',
+            updatedAt: serverTimestamp(),
+          });
+          setModalVisible(false);
+        } else {
+          alert('Item not found.');
+        }
+      } catch (error) {
+        console.error('Error updating item status:', error);
+        // Handle the error as needed
+      }
+    } else {
+      alert('Invalid code. Please try again.');
+    }
+  };
+  
+  
+
+  const pickup = (text) =>{
+
+  
+  }
 
   const handleShare = (item) => {
     Share.share({
@@ -59,7 +94,9 @@ const HomeScreen = () => {
         placeholder="Search by location"
         onChangeText={(query) => setSearchQuery(query)}
         value={searchQuery}
-        style={tw`mx-3 mt-10`}
+        placeholderTextColor="white"
+        iconColor="white"
+        style={tw`mx-3 mt-10 bg-pink-500 text-blue-600`}
       />
 
       <ScrollView style={tw`mb-30`}>
@@ -82,20 +119,60 @@ const HomeScreen = () => {
                 </Paragraph>
               </Card.Content>
               <Card.Actions>
-                <Pressable style={tw`bg-pink-600 p-3 rounded`} onPress={() => handleDirection(item)}>
+              <Pressable style={tw`bg-pink-600 p-3 rounded`} onPress={() => handlePickup(item)}>
+              <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
+                Pickup
+              </Text>
+            </Pressable>
+                {/* <Pressable style={tw`bg-pink-600 p-3 rounded`} onPress={() => handleDirection(item)}>
                   <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>Direction</Text>
-                </Pressable>
+                </Pressable> */}
                 <Pressable style={tw`bg-green-600 p-3 rounded`} onPress={() => handleCall(item.phoneNumber)}>
-                  <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>Call</Text>
+                <View style={tw`flex-row items-center justify-center`}>
+                <Text style={tw`font-semibold text-slate-50 text-center mr-2`}>Call</Text>
+                <Image source={require('../assets/icons/call.png')} style={tw`w-6 h-6 ml-0.5`} />
+              </View>
+                  
+                  
                 </Pressable>
                 <Pressable style={tw`bg-rose-600 p-3 rounded`} onPress={() => handleShare(item)}>
-                  <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>Share</Text>
+                <View style={tw`flex-row items-center justify-center`}>
+                <Text style={tw`font-semibold text-slate-50 text-center mr-2`}>Share</Text>
+                <Image source={require('../assets/icons/share.png')} style={tw`w-6 h-6 ml-0.5`} />
+              </View>
+                  
                 </Pressable>
               </Card.Actions>
             </Card>
           </View>
         ))}
       </ScrollView>
+ {/* Modal for code input */}
+
+ <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={tw`flex-1 justify-center items-center bg-gray-500 bg-opacity-50`}>
+          <View style={tw`bg-white p-4 rounded w-80`}>
+            <Text style={tw`text-lg font-semibold text-center`}>Enter code:</Text>
+            <TextInput
+              style={tw`border border-gray-400 p-2 mt-2`}
+              value={code}
+              onChangeText={(text) => setCode(text)}
+            />
+            <Pressable style={tw`bg-pink-600 p-3 rounded mt-4`} onPress={() => handleConfirmation()}>
+              <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
+                Confirm Code
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -10,6 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import tw from 'twrnc';
 import 'react-native-get-random-values';
 import { Image } from 'expo-image';
+import { Audio } from 'expo-av';
 import { v4 as uuidv4 } from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -18,7 +19,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from 'firebase/storage';
-
+import { MaterialIcons } from '@expo/vector-icons';
 const uriToBlob = (uri) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -122,7 +123,17 @@ const PostItemForm = () => {
 
     return true;
   };
+  const successSound = new Audio.Sound();
 
+  const playSuccessSound = async () => {
+    try {
+      await successSound.loadAsync(require('../assets/music/done.mp3'));
+      await successSound.playAsync();
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  };
+  
   const handlePostItem = async () => {
     if (posting) {
       return;
@@ -186,6 +197,7 @@ const PostItemForm = () => {
   
                 setPosting(false);
                 setSnackbarVisible(true);
+                playSuccessSound(); 
               } catch (error) {
                 console.error('Error posting item:', error);
                 setPosting(false);
@@ -202,50 +214,31 @@ const PostItemForm = () => {
   
 
   return (
-    <View style={tw`bg-emerald-100`}>
-      <View style={tw`bg-emerald-800 p-2 my-6`}>
+    <View style={tw``}>
+      <View style={tw`bg-pink-500 p-2 my-6`}>
         <StatusBar 
           barStyle="light-content"
           // backgroundColor="#2dd4bf"
         />
         <Text style={tw`text-white text-lg pl-2 font-bold`}>ShareEasy</Text>
       </View>
-      <ScrollView style={tw`mb-25 p-3 bg-emerald-100`}>
-        <View style={tw`bg-emerald-100 p-10 py-7 rounded-lg p-6 `}>
+      <ScrollView style={tw`mb-25 p-3 `}>
+        <View style={tw` p-10 py-7 rounded-lg p-6 `}>
           <TextInput
-              style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600` }
+              style={tw` mt-4 rounded text-black border-2 border-pink-500 bg-white` }
             label="Item Name"
             value={itemName}
             onChangeText={(text) => setItemName(text)}
           />
 
-          <TextInput
-            label="Item Description"
-            value={itemDescription}
-            onChangeText={(text) => setItemDescription(text)}
-            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-emerald-100` }
+<View style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}>
+<Optionbtn 
+            setSelectedCategory={setSelectedCategory}
+            selectedCategory={selectedCategory}
           />
-          <TextInput
-            label="Donater name"
-            value={Donatername}
-            onChangeText={(text) => setDonatername(text)}
-            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
-          />
-          <TextInput
-            label="Location"
-            value={ulocation}
-            onChangeText={(text) => setulocation(text)}
-            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
-          />
-          <TextInput
-            label="Phone Number"
-            value={phoneNumber}
-            onChangeText={(text) => setPhoneNumber(text)}
-            style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}
-          />
-
-          {selectedCategory === 'cookedfood' && (
-            <View style={tw`mt-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}>
+</View>
+{selectedCategory === 'cookedfood' && (
+            <View style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}>
                <Datedis 
               selectedDateTime={selectedDateTime}
               setSelectedDateTime={setSelectedDateTime}
@@ -253,14 +246,32 @@ const PostItemForm = () => {
             </View>
            
           )}
-<View style={tw`my-3 bg-slate-50 rounded text-stone-950 border-2 border-lime-600`}>
-<Optionbtn 
-            setSelectedCategory={setSelectedCategory}
-            selectedCategory={selectedCategory}
+          <TextInput
+            label="Item Description"
+            value={itemDescription}
+            onChangeText={(text) => setItemDescription(text)}
+            style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white` }
           />
-</View>
-          
+          <TextInput
+            label="Donater name"
+            value={Donatername}
+            onChangeText={(text) => setDonatername(text)}
+            style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}
+          />
+          <TextInput
+            label="Location"
+            value={ulocation}
+            onChangeText={(text) => setulocation(text)}
+            style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}
+          />
+          <TextInput
+            label="Phone Number"
+            value={phoneNumber}
+            onChangeText={(text) => setPhoneNumber(text)}
+            style={tw`mb-4 mt-4 rounded text-black border-2 border-pink-500 bg-white`}
+          />
 
+          
           {temporaryImage && (
             <View>
               <Image
@@ -275,11 +286,19 @@ const PostItemForm = () => {
       </View>
     )}
 
-<Pressable style={tw`bg-teal-400 p-3 rounded mb-2 `} onPress={pickImage}>
-      <Text mode="contained" style={tw`font-semibold text-slate-50 text-center  `}> Pick Image</Text>
+<Pressable style={tw`bg-black p-3 rounded mb-2 `} onPress={pickImage}>
+<View style={tw`flex-row items-center justify-center`}>
+                <Text style={tw`font-semibold text-slate-50 text-center mr-2`}>select image</Text>
+                <Image source={require('../assets/icons/upload.png')} style={tw`w-8 h-8 ml-2`} />
+              </View>
+     
     </Pressable>
-    <Pressable style={tw`bg-teal-300 p-3 rounded `} onPress={handlePostItem}>
-      <Text mode="contained" disabled={posting} style={tw`font-semibold text-slate-50 text-center `}> Post Item</Text>
+    <Pressable style={tw`bg-pink-500 p-3 rounded `} onPress={handlePostItem}>
+    <View style={tw`flex-row items-center justify-center`}>
+                <Text style={tw`font-semibold text-slate-50 text-center mr-2`}disabled={posting}>Share Item</Text>
+                <Image source={require('../assets/icons/volunter.png')} style={tw`w-8 h-8 ml-2`} />
+              </View>
+     
     </Pressable>
         
         
