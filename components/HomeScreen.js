@@ -15,12 +15,18 @@ const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+  const [address, setAddress] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [code, setCode] = useState('');
+  const [showAddress, setShowAddress] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
   const handleDirection = (item) => {
     alert("This feature is not available yet. Please check back later.");
   };
-
+  const handleShowAddress = (uadress) => {
+    setShowAddressModal(true);
+    setAddress(uadress);
+  };
   useEffect(() => {
     console.log('Fetching data...');
     const unsubscribe = onSnapshot(collection(db, 'items'), (snapshot) => {
@@ -104,11 +110,12 @@ const HomeScreen = () => {
           <View key={index}>
             <Card style={tw`bg-slate-100 mt-4 m-3`}>
               <Card.Content>
+
               <Text style={tw`font-semibold text-lg tracking-tight text-black capitalize mb-2`}>{item.status}</Text>
                 <Image source={{ uri: item.fileRef }} style={tw`rounded w-80 h-44`} />
 
                 <Title style={tw`font-bold text-lg tracking-tight text-black capitalize`}>{item.itemname}</Title>
-
+     
                 <Paragraph style={tw`font-semibold text-lg tracking-tight text-black capitalize`}>{item.itemDescription}</Paragraph>
                 <Paragraph style={tw`font-semibold text-lg tracking-tight text-black capitalize`}>Location: {item.location}</Paragraph>
                 <Paragraph style={tw`font-semibold text-lg tracking-tight text-black capitalize`}>Donor: {item.Donatername}</Paragraph>
@@ -119,6 +126,11 @@ const HomeScreen = () => {
                 </Paragraph>
               </Card.Content>
               <Card.Actions>
+              <Pressable style={tw`bg-slate-400 p-3 rounded`} onPress={() => handleShowAddress(item.uadress)}>
+                  <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
+                    Address
+                  </Text>
+                </Pressable>
               <Pressable style={tw`bg-pink-600 p-3 rounded`} onPress={() => handlePickup(item)}>
               <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
                 Pickup
@@ -148,31 +160,44 @@ const HomeScreen = () => {
         ))}
       </ScrollView>
  {/* Modal for code input */}
-
  <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={tw`flex-1 justify-center items-center bg-gray-500 bg-opacity-50`}>
-          <View style={tw`bg-white p-4 rounded w-80`}>
-            <Text style={tw`text-lg font-semibold text-center`}>Enter code:</Text>
-            <TextInput
-              style={tw`border border-gray-400 p-2 mt-2`}
-              value={code}
-              onChangeText={(text) => setCode(text)}
-            />
-            <Pressable style={tw`bg-pink-600 p-3 rounded mt-4`} onPress={() => handleConfirmation()}>
-              <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
-                Confirm Code
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+  animationType="slide"
+  transparent={true}
+  visible={showAddressModal}
+  onRequestClose={() => { setShowAddressModal(false);
+    setAddress('');}}
+  
+>
+  <Pressable style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }} onPress={() => setShowAddressModal(false)}>
+    <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%', alignItems: 'center' }}>
+      <Text style={{ marginBottom: 20, fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+      <Text style={{ fontSize: 16 }}>{address}</Text>
+      <Button title="Close" onPress={() => setShowAddressModal(false)} />
+    </View>
+  </Pressable>
+</Modal>
+ <Modal
+  animationType="slide"
+  transparent={true}
+  visible={modalVisible}
+  onRequestClose={() => setModalVisible(false)}
+>
+  <Pressable style={tw`flex-1 justify-center items-center bg-gray-500 bg-opacity-50`} onPress={() => setModalVisible(false)}>
+    <View style={tw`bg-white p-4 rounded w-80`}>
+      <Text style={tw`text-lg font-semibold text-center`}>Enter code:</Text>
+      <TextInput
+        style={tw`border border-gray-400 p-2 mt-2`}
+        value={code}
+        onChangeText={(text) => setCode(text)}
+      />
+      <Pressable style={tw`bg-pink-600 p-3 rounded mt-4`} onPress={() => handleConfirmation()}>
+        <Text mode="contained" style={tw`font-semibold text-slate-50 text-center`}>
+          Confirm Code
+        </Text>
+      </Pressable>
+    </View>
+  </Pressable>
+</Modal>
     </View>
   );
 };

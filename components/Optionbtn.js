@@ -7,7 +7,7 @@ import React, { useState } from 'react';
     { label: 'food', value: 'food' },
     { label: 'book', value: 'book' },
     { label: 'electroic', value: 'electroic' },
-    { label: 'ewaste', value: 'ewaste' },
+    // { label: 'ewaste', value: 'ewaste' },
     { label: 'dress', value: 'dress' },
     { label: 'cookedfood', value: 'cookedfood' },
    

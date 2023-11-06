@@ -31,7 +31,7 @@ const Main = () => {
             <Text style={tw`font-semibold text-2xl text-black text-center mb-4`}>Welcome To Our App </Text>
             <Text style={tw`font-bold text-2xl text-black text-center`}>
               Share
-              <Text style={tw`font-bold text-2xl text-pink-500`}>{'Easy'}</Text>
+              <Text style={tw`font-bold text-2xl text-pink-500`}>{'Ease'}</Text>
             </Text>
     <View style={tw`flex-row items-center justify-center`}>
             <Image source={require('../assets/dots.gif')} style={tw`h-20 w-20 mb-4`} />

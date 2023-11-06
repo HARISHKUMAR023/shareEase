@@ -41,6 +41,7 @@ const PostItemForm = () => {
   const [Donatername, setDonatername] = useState('');
   const [ulocation, setulocation] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [uadress, setuadress] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [posting, setPosting] = useState(false);
@@ -182,6 +183,7 @@ const PostItemForm = () => {
                   phoneNumber: phoneNumber,
                   selectedDateTime: selectedDateTime,
                   postedDateTime: currentDateTime,
+                  uadress:uadress,
                   fileRef: downloadURL || '',
                   status: 'available',
                 });
@@ -194,7 +196,7 @@ const PostItemForm = () => {
                 setPhoneNumber('');
                 setSelectedDateTime(null);
                 setTemporaryImage(null);
-  
+                setuadress('');
                 setPosting(false);
                 setSnackbarVisible(true);
                 playSuccessSound(); 
@@ -224,6 +226,12 @@ const PostItemForm = () => {
       </View>
       <ScrollView style={tw`mb-25 p-3 `}>
         <View style={tw` p-10 py-7 rounded-lg p-6 `}>
+        <View style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}>
+<Optionbtn 
+            setSelectedCategory={setSelectedCategory}
+            selectedCategory={selectedCategory}
+          />
+</View>
           <TextInput
               style={tw` mt-4 rounded text-black border-2 border-pink-500 bg-white` }
             label="Item Name"
@@ -231,12 +239,7 @@ const PostItemForm = () => {
             onChangeText={(text) => setItemName(text)}
           />
 
-<View style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}>
-<Optionbtn 
-            setSelectedCategory={setSelectedCategory}
-            selectedCategory={selectedCategory}
-          />
-</View>
+
 {selectedCategory === 'cookedfood' && (
             <View style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}>
                <Datedis 
@@ -262,6 +265,12 @@ const PostItemForm = () => {
             label="Location"
             value={ulocation}
             onChangeText={(text) => setulocation(text)}
+            style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}
+          />
+           <TextInput
+            label="Address"
+            value={uadress}
+            onChangeText={(text) => setuadress(text)}
             style={tw`mt-4 rounded text-black border-2 border-pink-500 bg-white`}
           />
           <TextInput
